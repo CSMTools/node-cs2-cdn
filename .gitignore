@@ -1,5 +1,3 @@
 .idea/
 node_modules/
-data/
-example.test.js
-testList.js
+yarn.lock

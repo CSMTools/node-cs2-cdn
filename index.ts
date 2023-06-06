@@ -1,10 +1,9 @@
-const Promise = require('bluebird');
-const EventEmitter = require('events');
-const fs = Promise.promisifyAll(require('fs'));
-const vpk = require('vpk');
-const vdf = require('simple-vdf');
-const hasha = require('hasha');
-const winston = require('winston');
+import EventEmitter from 'events'
+import fs from 'fs'
+import vpk from 'vpk'
+import vdf from 'simple-vdf'
+import hasha from 'hasha'
+import winston from 'winston'
 
 const defaultConfig = {
     directory: 'data',

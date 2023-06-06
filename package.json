@@ -1,8 +1,8 @@
 {
-  "name": "csgo-cdn",
-  "version": "1.2.0",
-  "description": "Retrieves the Steam CDN URLs for CS:GO Item Images",
-  "main": "index.js",
+  "name": "cs2-cdn",
+  "version": "1.0.0",
+  "description": "Retrieves the Steam CDN Image URLs for CS2/CS:GO Items",
+  "main": "build/index.js",
   "license": "MIT",
   "keywords": [
     "steam",
@@ -29,6 +29,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Step7750/node-csgo-cdn.git"
+    "url": "https://github.com/CSMTools/node-cs2-cdn.git"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.3"
   }
 }
