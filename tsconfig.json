@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Node 10",
+  "display": "Node 13.2.0",
 
   "compilerOptions": {
     "lib": ["ES2016"],

@@ -1,13 +1,46 @@
 import EventEmitter from 'events'
 import fs from 'fs'
-import vpk from 'vpk'
-import vdf from 'simple-vdf'
+import vpk from 'vpk2'
+import vdf from 'simple-vdf3'
 import hasha from 'hasha'
-import winston from 'winston'
+import winston, { Logger } from 'winston'
+import SteamUser from 'steam-user'
 
-const defaultConfig = {
+type Config = {
+    directory?: string;
+    /**
+     * Update interval in milliseconds.
+     */
+    updateInterval?: number;
+    stickers?: boolean;
+    patches?: boolean;
+    graffiti?: boolean;
+    characters?: boolean;
+    musicKits?: boolean;
+    cases?: boolean;
+    tools?: boolean;
+    statusIcons?: boolean;
+    logLevel?: string;
+}
+
+type Wear = 'Factory New' | 'Minimal Wear' | 'Field-Tested' | 'Well-Worn' | 'Battle-Scarred';
+
+type Phases = {
+    ruby: string;
+    sapphire: string;
+    blackpearl: string;
+    emerald: string;
+    phase1: string;
+    phase2: string;
+    phase3: string;
+    phase4: string;
+}
+
+type Phase = 'phase1' | 'phase' | 'phase3' | 'phase4' | 'emerald' | 'blackpearl' | 'sapphire' | 'ruby';
+
+const defaultConfig: Config = {
     directory: 'data',
-    updateInterval: 30000,
+    updateInterval: 32400000,
     stickers: true,
     patches: true,
     graffiti: true,
@@ -19,7 +52,7 @@ const defaultConfig = {
     logLevel: 'info'
 };
 
-const wears = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred'];
+const wears: Wear[] = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred'];
 
 const neededDirectories = {
     stickers: 'resource/flash/econ/stickers',
@@ -32,20 +65,25 @@ const neededDirectories = {
     statusIcons: 'resource/flash/econ/status_icons',
 };
 
-function bytesToMB(bytes) {
-    return (bytes/1000000).toFixed(2);
+function bytesToMB(bytes: number) {
+    return (bytes / 1000000).toFixed(2);
 }
 
 class CSGOCdn extends EventEmitter {
+    #ready: boolean = false;
+    #config: Config;
+    user: SteamUser;
+    log: Logger;
+
     get ready() {
-        return this.ready_ || false;
+        return this.#ready;
     }
 
     get steamReady() {
         return !!this.user.steamID;
     }
 
-    get phase() {
+    get phase(): Phases {
         return {
             ruby: 'am_ruby_marbleized',
             sapphire: 'am_sapphire_marbleized',
@@ -60,7 +98,7 @@ class CSGOCdn extends EventEmitter {
 
     set ready(r) {
         const old = this.ready;
-        this.ready_ = r;
+        this.#ready = r;
 
         if (r !== old && r) {
             this.log.debug('Ready');
@@ -68,20 +106,19 @@ class CSGOCdn extends EventEmitter {
         }
     }
 
-    constructor(steamUser, config={}) {
+    constructor(steamUser: SteamUser, config: Config = {}) {
         super();
 
-        this.config = Object.assign(defaultConfig, config);
+        this.#config = Object.assign(defaultConfig, config);
+
+        this.user = steamUser;
 
         this.createDataDirectory();
-
-        this.user = Promise.promisifyAll(steamUser, {multiArgs: true});
 
         this.log = winston.createLogger({
             level: config.logLevel,
             transports: [
                 new winston.transports.Console({
-                    colorize: true,
                     format: winston.format.printf((info) => {
                         return `[csgo-image-cdn] ${info.level}: ${info.message}`;
                     })
@@ -95,8 +132,7 @@ class CSGOCdn extends EventEmitter {
             this.user.once('loggedOn', () => {
                 this.updateLoop();
             });
-        }
-        else {
+        } else {
             this.updateLoop();
         }
     }
@@ -105,9 +141,9 @@ class CSGOCdn extends EventEmitter {
      * Creates the data directory specified in the config if it doesn't exist
      */
     createDataDirectory() {
-        const dir = `./${this.config.directory}`;
+        const dir = `./${this.#config.directory}`;
 
-        if (!fs.existsSync(dir)){
+        if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir);
         }
     }
@@ -116,9 +152,9 @@ class CSGOCdn extends EventEmitter {
      * Runs the update loop at the specified config interval
      * @return {Promise<undefined>|void}
      */
-    updateLoop() {
-        if (this.config.updateInterval > 0) {
-            return this.update().then(() => Promise.delay(this.config.updateInterval*1000))
+    updateLoop(): any {
+        if (this.#config.updateInterval && this.#config.updateInterval > 0) {
+            return this.update().then(() => Promise.delay((this.#config.updateInterval || 0) * 1000))
                 .then(() => this.updateLoop());
         }
         else {
@@ -129,7 +165,7 @@ class CSGOCdn extends EventEmitter {
                 this.loadResources();
                 this.loadVPK();
                 this.ready = true;
-            } catch(e) {
+            } catch (e) {
                 this.log.warn('Needed CS:GO files not installed');
                 this.update();
             }
@@ -279,7 +315,7 @@ class CSGOCdn extends EventEmitter {
 
         for (const file of files) {
             let name = file.filename.split('\\');
-            name = name[name.length-1];
+            name = name[name.length - 1];
 
             const path = `${this.config.directory}/${name}`;
 
@@ -352,7 +388,7 @@ class CSGOCdn extends EventEmitter {
 
             // pad to 3 zeroes
             const archiveIndex = requiredIndices[index];
-            const paddedIndex = '0'.repeat(3-archiveIndex.toString().length) + archiveIndex;
+            const paddedIndex = '0'.repeat(3 - archiveIndex.toString().length) + archiveIndex;
             const fileName = `pak01_${paddedIndex}.vpk`;
 
             const file = manifestFiles.find((f) => f.filename.endsWith(fileName));
@@ -365,13 +401,13 @@ class CSGOCdn extends EventEmitter {
                 continue;
             }
 
-            const status = `[${index+1}/${requiredIndices.length}]`;
+            const status = `[${index + 1}/${requiredIndices.length}]`;
 
             this.log.info(`${status} Downloading ${fileName} - ${bytesToMB(file.size)} MB`);
 
             await this.user.downloadFile(730, 731, file, filePath, (none, { type, bytesDownloaded, totalSizeBytes }) => {
                 if (type === 'progress') {
-                    this.log.info(`${status} ${(bytesDownloaded*100/totalSizeBytes).toFixed(2)}% - ${bytesToMB(bytesDownloaded)}/${bytesToMB(totalSizeBytes)} MB`);
+                    this.log.info(`${status} ${(bytesDownloaded * 100 / totalSizeBytes).toFixed(2)}% - ${bytesToMB(bytesDownloaded)}/${bytesToMB(totalSizeBytes)} MB`);
                 }
             });
 
@@ -387,7 +423,7 @@ class CSGOCdn extends EventEmitter {
      */
     async isFileDownloaded(path, sha1) {
         try {
-            const hash = await hasha.fromFile(path, {algorithm: 'sha1'});
+            const hash = await hasha.fromFile(path, { algorithm: 'sha1' });
 
             return hash === sha1;
         }
@@ -431,7 +467,7 @@ class CSGOCdn extends EventEmitter {
      * @param large Whether to obtain the "large" CDN version of the item
      * @return {string|void} If successful, the HTTPS CDN URL for the item
      */
-    getStickerURL(name, large=true) {
+    getStickerURL(name, large = true) {
         if (!this.ready) {
             return;
         }
@@ -454,7 +490,7 @@ class CSGOCdn extends EventEmitter {
      * @param large Whether to obtain the "large" CDN version of the item
      * @return {string|void} If successful, the HTTPS CDN URL for the item
      */
-     getPatchURL(name, large=true) {
+    getPatchURL(name, large = true) {
         if (!this.ready) {
             return;
         }
@@ -583,7 +619,7 @@ class CSGOCdn extends EventEmitter {
                 return k.item_name === stickerTag;
             });
 
-            const kit  = stickerKits[kitIndex];
+            const kit = stickerKits[kitIndex];
 
             if (!kit || !kit.sticker_material) continue;
 
@@ -594,7 +630,7 @@ class CSGOCdn extends EventEmitter {
             }
         }
     }
-    
+
     /**
      * Returns the patch URL given the market hash name
      * @param marketHashName Patch name
@@ -619,7 +655,7 @@ class CSGOCdn extends EventEmitter {
                 return k.item_name === stickerTag;
             });
 
-            const kit  = stickerKits[kitIndex];
+            const kit = stickerKits[kitIndex];
 
             if (!kit || !kit.patch_material) continue;
 
@@ -635,7 +671,7 @@ class CSGOCdn extends EventEmitter {
      * @param large Whether to obtain the "large" CDN version of the item
      * @return {string|void} CDN Image URL
      */
-    getGraffitiNameURL(marketHashName, large=true) {
+    getGraffitiNameURL(marketHashName, large = true) {
         const reg = /Sealed Graffiti \| ([^(]*)/;
         const match = marketHashName.match(reg);
 
