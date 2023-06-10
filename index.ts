@@ -68,17 +68,15 @@ class CSGOCdn extends EventEmitter {
         return !!this.user.steamID;
     }
 
-    get phase(): Phases {
-        return {
-            ruby: 'am_ruby_marbleized',
-            sapphire: 'am_sapphire_marbleized',
-            blackpearl: 'am_blackpearl_marbleized',
-            emerald: 'am_emerald_marbleized',
-            phase1: 'phase1',
-            phase2: 'phase2',
-            phase3: 'phase3',
-            phase4: 'phase4'
-        }
+    static phase: Phases = {
+        ruby: 'am_ruby_marbleized',
+        sapphire: 'am_sapphire_marbleized',
+        blackpearl: 'am_blackpearl_marbleized',
+        emerald: 'am_emerald_marbleized',
+        phase1: 'phase1',
+        phase2: 'phase2',
+        phase3: 'phase3',
+        phase4: 'phase4'
     }
 
     set ready(r) {
@@ -692,7 +690,7 @@ class CSGOCdn extends EventEmitter {
 
                 return k.item_name === stickerTag;
             });
-            
+
             if (!kitIndex) {
                 continue;
             }
@@ -796,7 +794,7 @@ class CSGOCdn extends EventEmitter {
                 return fab.item_name === weaponTag;
             });
 
-            let weaponClass;
+            let weaponClass: string | undefined;
 
             if (!prefab) {
                 // special knives aren't in the prefab (karambits, etc...)
@@ -837,11 +835,24 @@ class CSGOCdn extends EventEmitter {
             if (!skinName) {
                 if (weaponClass && this.itemsGameCDN[weaponClass]) {
                     return this.itemsGameCDN[weaponClass];
-                }
-                else {
+                } else {
                     continue;
                 }
             }
+
+            // Check if is widow knife and if so if the specified phase is special (the gems have the same index as regular dopplers, but the widow has it's own indexes for phase 1-4).
+            const isSpecialWidow = weaponClass === "weapon_knife_widowmaker"
+                && skinName === "Doppler"
+                && phase !== "am_ruby_marbleized"
+                && phase !== "am_sapphire_marbleized"
+                && phase !== "am_blackpearl_marbleized";
+
+            // Roughly same as isSpecialWidow, but for butterfly and push knives.
+            const isSpecialB = (weaponClass === "weapon_knife_push" || weaponClass === "weapon_knife_butterfly")
+                && skinName === "Doppler"
+                && (phase === "phase2"
+                    || phase === "am_sapphire_marbleized"
+                    || phase === "am_blackpearl_marbleized");
 
             // For every matching skin name...
             for (const key of this.csEnglish['inverted'][skinName] || []) {
@@ -851,7 +862,18 @@ class CSGOCdn extends EventEmitter {
 
                 const paintindexes = Object.keys(paintKits).filter((n) => {
                     const kit = paintKits[n];
-                    const isPhase = !phase || kit.name.endsWith(phase);
+
+                    let isPhase: boolean;
+
+                    if (weaponClass === "weapon_glock") {
+                        isPhase = !phase || kit.name.endsWith(phase + "_glock");
+                    } else if (isSpecialWidow) {
+                        isPhase = !phase || kit.name.endsWith(phase + "_widow");
+                    } else if (isSpecialB) {
+                        isPhase = !phase || kit.name.endsWith(phase + "_b");
+                    } else {
+                        isPhase = !phase || kit.name.endsWith(phase);
+                    }
 
                     return isPhase && kit.description_tag === skinTag;
                 });

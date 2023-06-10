@@ -33,11 +33,12 @@ cdn.on('ready', () => {
     console.log(cdn.getItemNameURL('StatTrak™ AWP | Redline (Field-Tested)'));
     console.log(cdn.getItemNameURL('StatTrak™ Music Kit | Noisia, Sharpened'));
     console.log(cdn.getItemNameURL('Sealed Graffiti | X-Axes (Tracer Yellow)'));
-    console.log(cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', cdn.phase.phase1));
-    console.log(cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', cdn.phase.emerald));
-    console.log(cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', cdn.phase.ruby));
-    console.log(cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', cdn.phase.sapphire));
-    console.log(cdn.getItemNameURL('★ Huntsman Knife | Doppler (Factory New)', cdn.phase.blackpearl));
+    console.log(cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', csgoCDN.phase.phase1));
+    console.log(cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', csgoCDN.phase.emerald));
+    console.log(cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', csgoCDN.phase.ruby));
+    console.log(cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', csgoCDN.phase.sapphire));
+    console.log(cdn.getItemNameURL('★ Huntsman Knife | Doppler (Factory New)', csgoCDN.phase.blackpearl));
+    console.log(cdn.getItemNameURL('Glock-18 | Gamma Doppler (Factory New)', csgoCDN.phase.emerald));
     console.log(cdn.getItemNameURL('AK-47 | Black Laminate (Field-Tested)'));
     console.log(cdn.getItemNameURL('Boston 2018 Inferno Souvenir Package'));
     console.log(cdn.getItemNameURL('CS20 Case Key'));

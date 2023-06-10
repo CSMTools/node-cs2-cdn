@@ -87,7 +87,7 @@ const cdn = new csCDN(user, { logLevel: 'debug' });
 
 cdn.on('ready', () => {
    console.log(cdn.getItemNameURL('M4A4 | 龍王 (Dragon King) (Field-Tested)'));
-   console.log(cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', cdn.phase.emerald));
+   console.log(cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', csCDN.phase.emerald));
 });
 ```
 
@@ -211,16 +211,16 @@ Parsed csgo_english file as a dictionary. Also contains all inverted keys, such 
 
 Parsed items_game_cdn.txt file as a dictionary
 
-### phase
+### `static` phase
 
-Doppler phase enum used to specify the phase of a knife or (soon) weapon.
+Doppler phase enum used to specify the phase of a knife or gun.
 
 ```javascript
-cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', cdn.phase.emerald);
-cdn.getItemNameURL('★ Huntsman Knife | Doppler (Factory New)', cdn.phase.blackpearl);
-cdn.getItemNameURL('★ Huntsman Knife | Doppler (Factory New)', cdn.phase.phase1);
-cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', cdn.phase.ruby);
-cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', cdn.phase.sapphire);
+cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', cdnClass.phase.emerald);
+cdn.getItemNameURL('★ Huntsman Knife | Doppler (Factory New)', cdnClass.phase.blackpearl);
+cdn.getItemNameURL('★ Huntsman Knife | Doppler (Factory New)', cdnClass.phase.phase1);
+cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', cdnClass.phase.ruby);
+cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', cdnClass.phase.sapphire);
 ```
 
 ## 🔊 Events
