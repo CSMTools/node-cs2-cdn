@@ -4,3 +4,6 @@ types.ts
 index.ts
 yarn.lock
 example.ts
+yarn-error.log
+data/
+node_modules/

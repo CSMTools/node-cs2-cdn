@@ -6,7 +6,11 @@ import hasha from 'hasha';
 import winston, { Logger } from 'winston';
 import SteamUser from 'steam-user';
 
-import { Config, Wear, Phases, ManifestFile, KVO, PhaseValue } from './types';
+import { Config, Wear, Phases, ManifestFile, KVO, PhaseValue, Phase } from './types';
+
+export {
+    Config, Wear, Phases, ManifestFile, KVO, PhaseValue, Phase
+}
 
 const CSGO_APP_ID: number = 730;
 const CSGO_DEPOT_ID: number = 731;

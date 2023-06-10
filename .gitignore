@@ -4,3 +4,4 @@ yarn.lock
 data/
 test.ts
 build/
+yarn-error.log
