@@ -115,7 +115,6 @@ class CSGOCdn extends EventEmitter {
             this.log.debug('Steam not ready, waiting for logon');
 
             this.user.once('loggedOn', () => {
-                console.log('loggedOn')
                 this.#updateLoop();
             });
         } else {
@@ -179,7 +178,6 @@ class CSGOCdn extends EventEmitter {
     #getLatestManifestId() {
         this.log.debug('Obtaining latest manifest ID');
         return this.#getProductInfo().then(([apps, packages, unknownApps, unknownPackages]) => {
-            console.log(apps, packages, unknownApps, unknownPackages);
             const csgo = apps[(CSGO_APP_ID).toString()].appinfo;
             const commonDepot = csgo.depots[(CSGO_DEPOT_ID).toString()];
 
@@ -382,8 +380,6 @@ class CSGOCdn extends EventEmitter {
                 }
             }
         }
-
-        console.log(1, requiredIndices)
 
         return requiredIndices.sort();
     }
