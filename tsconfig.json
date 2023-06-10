@@ -13,6 +13,12 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
-  }
+    "moduleResolution": "node",
+    "declaration": true
+  },
+
+  "exclude": [
+    "./example.ts",
+    "./build/*"
+  ]
 }
