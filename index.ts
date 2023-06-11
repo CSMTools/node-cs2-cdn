@@ -260,12 +260,23 @@ class CSGOCdn extends EventEmitter {
         this.weaponNameMap = Object.keys(this.csEnglish).filter(n => n.startsWith("SFUI_WPNHUD"));
         this.csEnglishKeys = Object.keys(this.csEnglish);
 
-        // Ensure paint kit descriptions are lowercase to resolve inconsistencies in the language and items_game file
+        // Ensure paint kit descriptions are available in lowercase to resolve inconsistencies in the language and items_game file
         Object.keys(this.itemsGame.paint_kits).forEach((n) => {
             const kit = this.itemsGame.paint_kits[n];
 
             if ('description_tag' in kit) {
-                kit.description_tag = kit.description_tag.toLowerCase();
+                // Check if english file and paintkit don't match, if they don't, make them the same.
+                if (!(kit.description_tag.replace("#", "") in this.csEnglish)) {
+                    const endKey: string = kit.description_tag.replace("#", "").toLowerCase();
+                    const engKey = getKeyCaseInsensitive(this.csEnglish, kit.description_tag.replace("#", ""));
+
+                    if (engKey) {
+                        this.csEnglish[endKey] = this.csEnglish[engKey];
+                        this.csEnglishKeys.push(endKey);
+                    }
+
+                    kit.description_tag = "#" + endKey;
+                }
             }
         });
 
@@ -856,7 +867,7 @@ class CSGOCdn extends EventEmitter {
 
             // For every matching skin name...
             for (const key of this.csEnglish['inverted'][skinName] || []) {
-                const skinTag = `#${key.toLowerCase()}`;
+                const skinTag = `#${key}`;
 
                 const paintKits = this.itemsGame.paint_kits;
 
@@ -1020,6 +1031,17 @@ class CSGOCdn extends EventEmitter {
             }
         }
     }
+}
+
+/**
+  * @param {Object} object
+  * @param {string} key
+  * @return {string | undefined} key
+ */
+function getKeyCaseInsensitive(object: any, key: string) {
+    const asLowercase = key.toLowerCase();
+    return Object.keys(object)
+        .find((k: string) => k.toLowerCase() === asLowercase);
 }
 
 export default CSGOCdn
