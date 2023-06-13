@@ -46,7 +46,12 @@ function bytesToMB(bytes: number) {
     return (bytes / 1000000).toFixed(2);
 }
 
-class CSGOCdn extends EventEmitter {
+declare interface CSCdn {
+    on(event: 'ready', listener: () => void): this;
+    on(event: string, listener: Function): this;
+}
+
+class CSCdn extends EventEmitter {
     #ready: boolean = false;
     #config: Config;
     user: SteamUser;
@@ -1044,4 +1049,4 @@ function getKeyCaseInsensitive(object: any, key: string) {
         .find((k: string) => k.toLowerCase() === asLowercase);
 }
 
-export default CSGOCdn
+export default CSCdn
