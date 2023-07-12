@@ -1,24 +1,8 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Node 13.2.0",
-
-  "compilerOptions": {
-    "lib": ["ES2016"],
-    "module": "esnext",
-    "target": "ES2016",
-
-    "outDir": "build",
-
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
-    "declaration": true
-  },
-
-  "exclude": [
-    "./example.ts",
-    "./build/*"
-  ]
+    "extends": "./tsconfig-base.json",
+    "compilerOptions": {
+        "module": "esnext",
+        "outDir": "dist/mjs",
+        "target": "esnext"
+    }
 }
