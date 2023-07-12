@@ -80,7 +80,7 @@ or
 #### 🛠 See example.js
 ```javascript
 const SteamUser = require('steam-user');
-const csCDN = require('cs2-cdn');
+const { default: csCDN } = require('cs2-cdn');
 
 const user = new SteamUser();
 const cdn = new csCDN(user, { logLevel: 'debug' });
