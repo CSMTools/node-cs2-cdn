@@ -1,7 +1,5 @@
 .idea/
 node_modules/
-yarn.lock
 data/
-test.ts
-build/
+dist/
 yarn-error.log

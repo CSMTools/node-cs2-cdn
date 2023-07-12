@@ -1049,4 +1049,4 @@ function getKeyCaseInsensitive(object: any, key: string) {
         .find((k: string) => k.toLowerCase() === asLowercase);
 }
 
-export default CSCdn
+export default CSCdn;

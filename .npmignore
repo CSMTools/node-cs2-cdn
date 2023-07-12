@@ -1,7 +1,10 @@
 .gitignore
 tsconfig.json
+tsconfig-base.json
+tsconfig-cjs.json
+fixup
 src/
 yarn.lock
-example.ts
 yarn-error.log
 node_modules/
+test_project/
