@@ -1,25 +1,25 @@
 {
-  "name": "csgo-cdn",
-  "version": "1.2.0",
-  "description": "Retrieves the Steam CDN URLs for CS:GO Item Images",
-  "main": "index.js",
+  "name": "cs2-cdn",
+  "version": "1.2.3",
+  "description": "Retrieves the Steam CDN Image URLs for CS2/CS:GO Items",
+  "main": "build/index.js",
   "license": "MIT",
+  "type": "module",
   "keywords": [
     "steam",
     "csgo",
     "global offensive",
-    "csgo",
+    "cs2",
     "stickers",
     "cdn",
     "images"
   ],
   "dependencies": {
-    "bluebird": "^3.5.1",
-    "hasha": "^3.0.0",
-    "simple-vdf": "^1.1.0",
-    "steam-totp": "^2.0.1",
-    "steam-user": "^4.19.2",
-    "vpk": "0.2.0",
+    "hasha": "^5.2.2",
+    "simple-vdf3": "^1.0.4",
+    "steam-totp": "^2.1.2",
+    "steam-user": "^4.28.6",
+    "vpk2": "^0.1.0",
     "winston": "^3.0.0-rc1"
   },
   "author": {
@@ -27,8 +27,20 @@
     "email": "Step7750@gmail.com",
     "url": "http://stepan.me"
   },
+  "contributors": [
+    {
+      "name": "Albin Hedwall",
+      "email": "albin.hedwall@gmail.com",
+      "url": "https://github.com/wavpro"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Step7750/node-csgo-cdn.git"
+    "url": "https://github.com/CSMTools/node-cs2-cdn.git"
+  },
+  "devDependencies": {
+    "@types/steam-totp": "^2.1.0",
+    "@types/steam-user": "^4.26.4",
+    "typescript": "^5.1.3"
   }
 }

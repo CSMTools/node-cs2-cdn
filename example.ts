@@ -1,6 +1,6 @@
-const SteamUser = require('steam-user');
-const SteamTotp = require('steam-totp');
-const csgoCDN = require('./index');
+import SteamUser from 'steam-user';
+import SteamTotp from 'steam-totp';
+import csgoCDN from './index.js';
 
 const cred = {
     username: 'USERNAME',
@@ -33,42 +33,35 @@ cdn.on('ready', () => {
     console.log(cdn.getItemNameURL('StatTrak™ AWP | Redline (Field-Tested)'));
     console.log(cdn.getItemNameURL('StatTrak™ Music Kit | Noisia, Sharpened'));
     console.log(cdn.getItemNameURL('Sealed Graffiti | X-Axes (Tracer Yellow)'));
-    console.log(cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', cdn.phase.phase1));
-    console.log(cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', cdn.phase.emerald));
-    console.log(cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', cdn.phase.ruby));
-    console.log(cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', cdn.phase.sapphire));
-    console.log(cdn.getItemNameURL('★ Huntsman Knife | Doppler (Factory New)', cdn.phase.blackpearl));
+    console.log(cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', csgoCDN.phase.phase1));
+    console.log(cdn.getItemNameURL('★ Karambit | Gamma Doppler (Factory New)', csgoCDN.phase.emerald));
+    console.log(cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', csgoCDN.phase.ruby));
+    console.log(cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', csgoCDN.phase.sapphire));
+    console.log(cdn.getItemNameURL('★ Huntsman Knife | Doppler (Factory New)', csgoCDN.phase.blackpearl));
+    console.log(cdn.getItemNameURL('Glock-18 | Gamma Doppler (Factory New)', csgoCDN.phase.emerald));
     console.log(cdn.getItemNameURL('AK-47 | Black Laminate (Field-Tested)'));
     console.log(cdn.getItemNameURL('Boston 2018 Inferno Souvenir Package'));
-    console.log(cdn.getItemNameURL('CS:GO Case Key'));
+    console.log(cdn.getItemNameURL('CS20 Case Key'));
     console.log(cdn.getItemNameURL('★ Karambit'));
     console.log(cdn.getItemNameURL('AK-47'));
     console.log(cdn.getItemNameURL('★ Karambit | Forest DDPAT'));
     console.log(cdn.getItemNameURL('AWP | Redline'));
 });
 
-SteamTotp.getAuthCode(cred.shared_secret, (err, code) => {
-    if (err) {
-        throw err;
-    }
+const code = SteamTotp.getAuthCode(cred.shared_secret);
 
-    const loginDetails = {
-        accountName: cred.username,
-        password: cred.password,
-        rememberPassword: true,
-        twoFactorCode: code,
-        logonID: 2121,
-    };
+const loginDetails = {
+    accountName: cred.username,
+    password: cred.password,
+    rememberPassword: true,
+    twoFactorCode: code,
+    logonID: 2121,
+};
 
-    console.log('Logging into Steam....');
+console.log('Logging into Steam....');
 
-    user.logOn(loginDetails);
-});
+user.logOn(loginDetails);
 
 user.on('loggedOn', () => {
     console.log('Logged onto Steam');
-});
-
-user.on('contentServersReady', () => {
-    console.log('Content servers ready');
 });
