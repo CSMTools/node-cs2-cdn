@@ -4,6 +4,7 @@ export type Config = {
      * Update interval in milliseconds.
      */
     updateInterval?: number;
+    enableHashCache?: boolean;
     stickers?: boolean;
     patches?: boolean;
     graffiti?: boolean;

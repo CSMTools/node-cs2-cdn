@@ -7,6 +7,7 @@ import winston, { Logger } from 'winston';
 import SteamUser from 'steam-user';
 
 import { Config, Wear, Phases, ManifestFile, KVO, PhaseValue, Phase } from './types';
+import Store from './store.js';
 
 export {
     Config, Wear, Phases, ManifestFile, KVO, PhaseValue, Phase
@@ -18,6 +19,7 @@ const CSGO_DEPOT_ID: number = 731;
 const defaultConfig: Config = {
     directory: 'data',
     updateInterval: 32400000,
+    enableHashCache: true,
     stickers: true,
     patches: true,
     graffiti: true,
@@ -64,6 +66,7 @@ class CSCdn extends EventEmitter {
     csEnglishKeys: string[] = [];
     #vpkStickerFiles: string[] = [];
     #vpkPatchFiles: string[] = [];
+    #hashes?: Store<string> = undefined;
 
     get ready() {
         return this.#ready;
@@ -102,6 +105,10 @@ class CSCdn extends EventEmitter {
         this.user = steamUser;
 
         this.#createDataDirectory();
+
+        if (this.#config.enableHashCache) {
+            this.#hashes = new Store(`${this.#config.directory}/hash_cache.json`)
+        }
 
         this.log = winston.createLogger({
             level: config.logLevel,
@@ -460,7 +467,15 @@ class CSCdn extends EventEmitter {
      */
     async #isFileDownloaded(path: string, sha1: string) {
         try {
+            if (this.#hashes?.getValue(path)) {
+                return this.#hashes.getValue(path);
+            }
+
             const hash = await hasha.fromFile(path, { algorithm: 'sha1' });
+
+            if (this.#hashes) {
+                this.#hashes.setValue(path, hash);
+            }
 
             return hash === sha1;
         } catch (e) {
