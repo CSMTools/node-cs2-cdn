@@ -7,4 +7,4 @@ src/
 yarn.lock
 yarn-error.log
 node_modules/
-test_project/
+data/

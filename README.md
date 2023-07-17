@@ -101,6 +101,7 @@ cdn.on('ready', () => {
     {
         directory: 'data', // relative data directory for VPK files
         updateInterval: 32400000, // miliseconds between update checks, -1 to disable auto-updates
+        enableHashCache: true, // whether to enable checksum caching for the downloaded files
         logLevel: 'info', // logging level, (error, warn, info, verbose, debug, silly)
         stickers: true, // whether to obtain the vpk for stickers
         patches: true, // whether to obtain the vpk for patches
