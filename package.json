@@ -1,6 +1,6 @@
 {
   "name": "cs2-cdn",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Retrieves the Steam CDN Image URLs for CS2/CS:GO Items",
   "license": "MIT",
   "main": "dist/cjs/index.js",
